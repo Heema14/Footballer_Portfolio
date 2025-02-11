@@ -90,7 +90,7 @@
         </div>
 
         <div class="center Animation_ViewSec">
-            <a href="#Portfolio" class="btn BtnViewPhotos">View More</a>
+            <a href="#videos" class="btn BtnViewPhotos">View More</a>
         </div>
     </section>
 
@@ -189,33 +189,49 @@
         const images =
             ['./Imgs/Photos/3.JPEG', './Imgs/Photos/4.JPEG', './Imgs/Photos/5.JPEG', './Imgs/Photos/6.JPEG', './Imgs/Photos/7.JPEG', './Imgs/Photos/8.JPEG', './Imgs/Photos/9.JPEG', './Imgs/Photos/10.JPEG', './Imgs/Photos/11.JPEG', './Imgs/Photos/12.JPEG', './Imgs/Photos/13.JPEG', './Imgs/Photos/14.JPEG', './Imgs/Photos/15.JPEG', './Imgs/Photos/16.JPEG', './Imgs/Photos/17.JPEG', './Imgs/Photos/18.JPEG', './Imgs/Photos/19.JPEG', './Imgs/Photos/20.JPEG', './Imgs/Photos/21.JPEG', './Imgs/Photos/22.JPEG', './Imgs/Photos/23.JPEG', './Imgs/Photos/24.JPEG', './Imgs/Photos/25.JPEG', './Imgs/Photos/26.JPEG', './Imgs/Photos/27.JPEG', './Imgs/Photos/28.JPEG', './Imgs/Photos/29.JPEG', './Imgs/Photos/30.JPEG', './Imgs/Photos/31.JPEG', './Imgs/Photos/32.JPEG', './Imgs/Photos/34.JPEG', './Imgs/Photos/35.JPEG', './Imgs/Photos/36.JPEG', './Imgs/Photos/37.JPEG', './Imgs/Photos/38.JPEG', './Imgs/Photos/39.JPEG', './Imgs/Photos/40.JPEG', './Imgs/Photos/41.JPG', './Imgs/Photos/42.JPG', './Imgs/Photos/43.JPG', './Imgs/Photos/44.JPG', './Imgs/Photos/45.JPG', './Imgs/Photos/46.JPG', './Imgs/Photos/47.JPG', './Imgs/Photos/48.JPG', './Imgs/Photos/49.JPG', './Imgs/Photos/50.JPG', './Imgs/Photos/51.JPG', './Imgs/Photos/52.JPEG', './Imgs/Photos/53.JPEG', './Imgs/Photos/54.JPEG', './Imgs/Photos/55.JPEG', './Imgs/Photos/56.JPEG', './Imgs/Photos/57.JPEG', './Imgs/Photos/58.JPEG', './Imgs/Photos/59.JPEG', './Imgs/Photos/60.JPEG', './Imgs/Photos/61.JPEG', './Imgs/Photos/62.JPEG', './Imgs/Photos/63.JPEG', './Imgs/Photos/64.JPEG', './Imgs/Photos/65.JPEG', './Imgs/Photos/66.jpg'];
 
-        const currentIndex = 0,
-            imagesPerLoad = 6,
-            imageSection = document.querySelector('#Portfolio .content'),
-            loadMoreBtn = document.querySelector('.BtnViewPhotos');
+        let currentIndex = 0;
+        const imagesPerLoad = 3;
+        const imageSection = document.querySelector('#Portfolio .content');
+        const loadMoreBtn = document.querySelector('.BtnViewPhotos');
 
         function loadImages() {
-            if (currentIndex < images.length) {
-                for (let i = 0; i < imagesPerLoad; i++) {
+            // Load a batch of images
+            for (let i = 0; i < imagesPerLoad; i++) {
+                if (currentIndex >= images.length) break;
 
-                    if (currentIndex >= images.length) break;
+                const imgBox = document.createElement('div');
+                imgBox.classList.add('imgBx');
 
-                    const div = document.createElement('div');
-                    div.classList.add('imgBx')
-                    const img = document.createElement('img');
-                    img.style.width = '100%';
-                    img.src = images[currentIndex];
-                    div.appendChild(img);
-                    imageSection.appendChild(div);
-                    currentIndex++;
-                }
+                const img = document.createElement('img');
+                img.src = images[currentIndex];
+                img.style.width = '100%';
+                imgBox.appendChild(img);
+
+                imageSection.appendChild(imgBox);
+                currentIndex++;
             }
 
+            // Check if all images are loaded and adjust the button
             if (currentIndex >= images.length) {
                 loadMoreBtn.textContent = 'View less';
-                loadMoreBtn.onclick = resetImages;
+                loadMoreBtn.removeEventListener('click', loadImages);
+                loadMoreBtn.addEventListener('click', resetImages);
             }
         }
+
+        function resetImages() {
+            imageSection.innerHTML = '';  // Clear the current images
+            currentIndex = 0;
+            loadMoreBtn.textContent = 'View More';
+            loadMoreBtn.removeEventListener('click', resetImages);
+            loadMoreBtn.addEventListener('click', loadImages);
+        }
+
+        // Initially load images when the page loads
+        loadImages();
+
+        // Click event for loading more or resetting images
+        loadMoreBtn.addEventListener('click', loadImages);
 
         function resetImages() {
             imageSection.innerHTML = '';
